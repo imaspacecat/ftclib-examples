@@ -9,7 +9,10 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import org.firstinspires.ftc.teamcode.example.util.Junction;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.DoubleSupplier;
+import java.util.HashMap;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
@@ -17,12 +20,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     private Junction currentGoal;
 
-    // tune
-    public static int none = 0;
-    public static int ground = 150;
-    public static int low = 840; // 837
-    public static int medium = 1200;
-    public static int high = 1600;
+    EnumMap<Junction, Integer> encoderTicks = new EnumMap<>(Junction.class);
 
     public static double kP = 1;
     public static double kI = 0;
@@ -44,46 +42,25 @@ public class LiftSubsystem extends SubsystemBase {
         this.left = left;
         this.right = right;
         this.doubleSupplier = doubleSupplier;
+
+        // tune
+        encoderTicks.put(Junction.NONE, 0);
+        encoderTicks.put(Junction.GROUND, 150);
+        encoderTicks.put(Junction.LOW, 840);
+        encoderTicks.put(Junction.MEDIUM, 1200);
+        encoderTicks.put(Junction.HIGH, 1600);
     }
 
     public void setJunction(Junction junction){
         currentGoal = junction;
-        switch (junction) {
-            case NONE:
-                currentTarget = none;
-                controller.setSetPoint(none);
-                break;
-            case GROUND:
-                currentTarget = ground;
-                controller.setSetPoint(ground);
-                break;
-            case LOW:
-                currentTarget = low;
-                controller.setSetPoint(low);
-                break;
-            case MEDIUM:
-                currentTarget = medium;
-                controller.setSetPoint(medium);
-                break;
-            case HIGH:
-                currentTarget = high;
-                controller.setSetPoint(high);
-                break;
-        }
+
+        currentTarget = encoderTicks.get(junction);
+        controller.setSetPoint(currentTarget);
     }
 
     public boolean atTarget(){
-        switch(currentGoal){
-            case NONE:
-                return left.getCurrentPosition()<none + threshold && left.getCurrentPosition()>none - threshold;
-            case GROUND:
-                return left.getCurrentPosition()<ground + threshold && left.getCurrentPosition()>ground - threshold;
-            case LOW:
-                return left.getCurrentPosition()<low + threshold && left.getCurrentPosition()>low - threshold;
-            case MEDIUM:
-                return left.getCurrentPosition()<medium + threshold && left.getCurrentPosition()>medium - threshold;
-            case HIGH:
-                return left.getCurrentPosition()<high + threshold && left.getCurrentPosition()>high - threshold;
+        if (currentGoal != null) {
+            return left.getCurrentPosition() < currentTarget + threshold && left.getCurrentPosition() > currentTarget - threshold;
         }
         return false;
     }
