@@ -1,13 +1,7 @@
 package org.firstinspires.ftc.teamcode.example.opmode;
 
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.example.lift.SetJunction;
 import org.firstinspires.ftc.teamcode.example.util.Junction;
-
-import java.util.Arrays;
-import java.util.List;
 
 // import statically so that Gamepad.Button does not have to be repeated
 import static com.arcrobotics.ftclib.gamepad.GamepadKeys.Button.*;

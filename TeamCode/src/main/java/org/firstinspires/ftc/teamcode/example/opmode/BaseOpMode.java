@@ -38,7 +38,7 @@ public class BaseOpMode extends CommandOpMode {
         setUp();
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
-        lift = new LiftSubsystem(liftLeft, liftRight, gamepadEx2::getLeftY);
+        lift = new LiftSubsystem(liftLeft, liftRight);
         claw = new ClawSubsystem(clawServo);
         lift.setJunction(Junction.NONE);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -97,11 +97,10 @@ public class BaseOpMode extends CommandOpMode {
 
         tad("Heading", imu.getHeading());
 
-        tad("Current Junction", lift.getCurrentJunction());
+        tad("Current Junction", lift.getCurrentGoal());
 
-        tad("output", lift.getOutput());
-        tad("current target", lift.getCurrentTarget());
-        tad("current junction", lift.getCurrentJunction());
+        tad("Output", lift.getOutput());
+        tad("Current Goal", lift.getCurrentGoal());
 
         telemetry.update();
 
